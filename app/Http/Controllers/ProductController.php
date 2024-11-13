@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
+
 
 class ProductController extends Controller
 {
@@ -13,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::paginate(3);
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -21,39 +23,47 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('product.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        //
-    }
+        $product = new Product();
+        $product->categoryID = $request->categoryID;
+        $product->productCode = $request->productCode;
+        $product->productName = $request->productName;
+        $product->listPrice = $request->listPrice;
+        $product->save();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
+        return redirect()->route('product.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($i)
     {
-        //
+        $categories = Category::all();
+        $product = Product::find($i);
+        return view('product.edit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+        $product->categoryId = $request->categoryId;
+        $product->productCode = $request->productCode;
+        $product->productName = $request->productName;
+        $product->listPrie = $request->listPrie;
+        $product->save();
+        return redirect()->route('product.index');
     }
 
     /**
@@ -61,6 +71,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product = Product::find($product->id)->delete();
+        return redirect()->route('product.index');
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -28,12 +27,17 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(Request $request)
     {
-        $categoryName = $request->categoryName;
-        Category::create(['categoryName' => $categoryName]);
-        return redirect()->route('category.index');
+        try {
+            $categoryName = $request->categoryName;
+            Category::create(['categoryName' => $categoryName]);
+            return redirect()->route('category.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to add category: ' . $e->getMessage()]);
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -56,7 +60,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $params = [
             'categoryName' => $request->categoryName,

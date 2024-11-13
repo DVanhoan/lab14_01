@@ -1,5 +1,5 @@
 <hr class="border-dark">
 
-<footer>
-    <p>&copy; <?php echo date("Y"); ?></p>
+<footer class=" text-center mt-3">
+    <p>&copy; <?php echo date("Y"); ?> Dương Văn Hoan</p>
 </footer>
